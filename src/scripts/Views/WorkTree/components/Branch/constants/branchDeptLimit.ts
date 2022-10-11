@@ -1,0 +1,1 @@
+export const BRANCH_DEPT_LIMIT = 3;
