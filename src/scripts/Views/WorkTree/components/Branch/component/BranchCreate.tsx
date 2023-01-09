@@ -3,7 +3,7 @@ import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 
-import { addBranch } from '../../../utils/dbHandlers';
+import { addBranch } from '../utils/dbHandlers';
 
 interface BranchCreateProps {
     treeId: number;
@@ -15,6 +15,7 @@ interface BranchCreateProps {
 export function BranchCreate({ treeId, parentBranchId, deactivate, reloadBranches }: BranchCreateProps): JSX.Element {
     const [newBranchDescription, setNewBranchDescription] = React.useState<string>('');
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const boxRef = React.useRef<HTMLDivElement>(null);
 
     const handleBranchInputChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setNewBranchDescription(event.target.value);
@@ -25,6 +26,7 @@ export function BranchCreate({ treeId, parentBranchId, deactivate, reloadBranche
             .then(() => {
                 setNewBranchDescription('');
                 reloadBranches();
+                inputRef.current?.focus();
             });
     }, [newBranchDescription, treeId, parentBranchId]);
 
@@ -36,13 +38,22 @@ export function BranchCreate({ treeId, parentBranchId, deactivate, reloadBranche
         }
     }, [newBranchDescription]);
 
+    const handleClickOutside = React.useCallback((event: MouseEvent) => {
+        if (!boxRef.current?.contains(event.target as Node)) deactivate && deactivate();
+    }, [boxRef]);
+
     React.useEffect(() => {
         inputRef.current?.focus();
+        document.addEventListener('mouseup', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mouseup', handleClickOutside);
+        }
     }, []);
 
     return (
-        <div>
-            <input ref={inputRef} value={newBranchDescription} onChange={handleBranchInputChange} onKeyDown={handleKeyPress} onBlur={deactivate}/>
+        <div ref={boxRef}>
+            <input ref={inputRef} value={newBranchDescription} onChange={handleBranchInputChange} onKeyDown={handleKeyPress}/>
             <button onClick={handleSubmit} disabled={newBranchDescription.length < 3}><FontAwesomeIcon icon={faRightToBracket} /></button>
         </div>
     );

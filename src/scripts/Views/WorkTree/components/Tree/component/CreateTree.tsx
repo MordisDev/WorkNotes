@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-import { addTree } from '../utils/dbHandlers';
+import { Input } from '../../../../../styled/Input';
+
+import { addTree } from '../utils/addTree';
 
 interface CreateTreePropos {
     reloadTrees: () => void;
@@ -41,5 +43,5 @@ export function CreateTree({ reloadTrees, selectTree }: CreateTreePropos): JSX.E
         }
     }, [ref, newTreeName]);
 
-    return <input onChange={handleNameChange} value={newTreeName} onBlur={handleBlur} onKeyDown={handleKeyPress}/>
+    return <Input onChange={handleNameChange} placeholder="New" value={newTreeName} onBlur={handleBlur} onKeyDown={handleKeyPress} maxLength={32}/>
 }
