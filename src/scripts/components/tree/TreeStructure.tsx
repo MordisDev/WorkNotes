@@ -1,13 +1,10 @@
 import * as React from 'react';
 import { styled } from '@linaria/react';
 
-import { Remove } from '../../../../../styled/Remove';
-import { Divider } from '../../../../../styled/Divider';
-import { Root as BranchRoot } from '../../Branch/component/Root';
+import { BranchRoot } from '../branch/BranchRoot';
+import { TreeRemove } from './TreeRemove';
 
-import { TreeRecord } from '../../../indexedDB/database';
-
-import { removeTree } from '../utils/removeTree';
+import { TreeRecord } from '../../indexedDB/database.config';
 
 const TreePresentationWrapper = styled.div`
     margin: 3em;
@@ -21,12 +18,16 @@ const Title = styled.h2`
     margin-bottom: 0.3em;
 `;
 
+const Divider = styled.hr`
+    border: 1px solid black;
+    box-shadow: 0px 1px var(--color-background-lighter);
+`;
+
 interface PresentTreeProps {
     tree: TreeRecord;
-    deselectAndReloadTrees: () => void;
 }
 
-export function PresentTree({ tree, deselectAndReloadTrees }: PresentTreeProps): JSX.Element {
+export function TreeStructure({ tree }: PresentTreeProps): JSX.Element {
 
     if (!tree.id) return <div>Failed to find tree id.</div>;
 
@@ -34,7 +35,7 @@ export function PresentTree({ tree, deselectAndReloadTrees }: PresentTreeProps):
         <TreePresentationWrapper>
             <TitleWrapper>
                 <Title>{tree.name}</Title>
-                <Remove removeItemId={tree.id} removeFunction={removeTree} refreshFunction={deselectAndReloadTrees}/>
+                <TreeRemove treeId={tree.id}/>
             </TitleWrapper>
             <Divider />
             <BranchRoot treeId={tree.id}/>

@@ -1,15 +1,33 @@
 import * as React from 'react';
+import { styled } from '@linaria/react';
 
-import { Input } from '../../../../../styled/Input';
+import { addTree } from '../../indexedDB/treeQueries';
 
-import { addTree } from '../utils/addTree';
+const Input = styled.input`
+    width: 280px;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    border-radius: .1em;
+    box-shadow: -2px -2px 4px var(--color-background), 2px 2px 4px var(--color-background-lighter);
+    outline: 0;
+
+    color: white;
+    padding: 0.1em 0.5em;
+    margin: 0.4em 0.8em;
+    font-family: inherit;
+    font-size: 1.4em;
+
+    &::placeholder {
+        opacity: .5;
+    }
+`;
 
 interface CreateTreePropos {
-    reloadTrees: () => void;
     selectTree: (id: number) => void;
 }
 
-export function CreateTree({ reloadTrees, selectTree }: CreateTreePropos): JSX.Element {
+export function TreeCreate({ selectTree }: CreateTreePropos): JSX.Element {
     const [newTreeName, setNewTreeName] = React.useState<string>('');
     const ref = React.useRef({ skipBlurEvent: false });
 
@@ -20,7 +38,6 @@ export function CreateTree({ reloadTrees, selectTree }: CreateTreePropos): JSX.E
     const saveAndReload = React.useCallback((withReload = false) => {
         addTree(newTreeName).then(id => {
             if (withReload) selectTree(id);
-            reloadTrees();
             setNewTreeName('');
         }).catch(err => console.log(err));
     }, [newTreeName]);
