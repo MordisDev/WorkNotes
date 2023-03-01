@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { styled } from '@linaria/react';
 
-interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
+import { TreeRecord } from '../../indexedDB/database.config';
+
+interface SideMenuButtonProps extends React.HTMLProps<HTMLButtonElement> {
     isSelected?: boolean;
     outline?: 'main' | 'menu';
     width?: string;
 }
 
-function getShadowEffect(outline: ButtonProps['outline'], active?: boolean): string {
+function getShadowEffect(outline: SideMenuButtonProps['outline'], active?: boolean): string {
     switch (outline) {
         case "menu":
             if(active) return "-2px -2px 4px var(--color-background), 2px 2px 4px var(--color-background-lighter)";
@@ -20,13 +22,13 @@ function getShadowEffect(outline: ButtonProps['outline'], active?: boolean): str
     }
 }
 
-export const Button = styled.button<ButtonProps>`
+export const SideMenuButton = styled.button<SideMenuButtonProps>`
     width: ${({ width }) => width ? width : "auto"};
     color: ${({ isSelected }) => isSelected ? "var(--color-accent)" : "var(--color-text)"};
     transition: color 0.1s;
     background: none;
     border: none;
-    border-radius: 0.4em;
+    border-radius: .1em;
     box-shadow: ${({ outline }) => getShadowEffect(outline, false)};
 
     cursor: pointer;
@@ -45,3 +47,18 @@ export const Button = styled.button<ButtonProps>`
         box-shadow: ${({ outline }) => getShadowEffect(outline, true)};
     }
 `;
+
+interface SelectTreeProps {
+    tree: TreeRecord;
+    handleSelect: (id: number) => void;
+    isSelected: boolean;
+}
+
+export function TreeSelect({ tree, handleSelect, isSelected }: SelectTreeProps): JSX.Element {
+    const handleClick = React.useCallback(() => {
+        if(!tree.id) throw new Error('There is an issue with tree id.');
+        handleSelect(tree.id);
+    }, [tree]);
+
+    return <SideMenuButton onClick={handleClick} isSelected={isSelected} width="280px" outline="menu">{tree.name}</SideMenuButton>
+}

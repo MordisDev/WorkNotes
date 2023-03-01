@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { css } from '@linaria/core';
 
-import { MainLayout } from './MainLayout';
+import { TopBar } from './TopBar';
+import { WorkTreeRoot } from './tree/WorkTreeRoot';
 
 const globals = css`
     :global() {
@@ -14,6 +15,8 @@ const globals = css`
             --color-text-dark: #4b4d4e;
             --color-strong: #D94B46;
             --color-accent: #D99836;
+            --color-success: #87B448;
+            --color-error: red;
         }
         body {
             background-color: var(--color-background);
@@ -36,6 +39,11 @@ const globals = css`
 
 export class App extends React.Component {
     render(): JSX.Element {
-        return <MainLayout />;
+        return (
+            <div>
+                <TopBar />
+                <WorkTreeRoot />
+            </div>
+        );
     }
 }
